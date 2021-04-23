@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "966483423410",
+    "firebase_url": "https://needy-a9ace.firebaseio.com",
+    "project_id": "needy-a9ace",
+    "storage_bucket": "needy-a9ace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966483423410:android:224519f0e3f49992",
+        "android_client_info": {
+          "package_name": "com.needy.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966483423410-7tva67kiv4ph31rojakotl2ikehpjvke.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCAQTq6jS307QVGAZ5XksKuE20ftmaC7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966483423410-7tva67kiv4ph31rojakotl2ikehpjvke.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966483423410:android:b31125931ef86edab419ab",
+        "android_client_info": {
+          "package_name": "com.vallabhjoshi.needy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966483423410-7tva67kiv4ph31rojakotl2ikehpjvke.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCAQTq6jS307QVGAZ5XksKuE20ftmaC7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966483423410-7tva67kiv4ph31rojakotl2ikehpjvke.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
