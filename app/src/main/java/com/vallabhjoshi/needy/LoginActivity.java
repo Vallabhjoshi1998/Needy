@@ -36,7 +36,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.ktx.Firebase;
 
 import es.dmoral.toasty.Toasty;
 
@@ -96,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void run() {
                 BannerTextView.setVisibility(View.VISIBLE);
             }
-        }, 1000);
+        }, 800);
     }
 
     @Override
@@ -126,10 +129,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void ForgotPassMethod()
     {
 
-        final EditText resetMail = new EditText(LoginActivity.this);
+        EditText resetMail = new EditText(LoginActivity.this);
         final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(LoginActivity.this);
-        passwordResetDialog.setTitle("Reset Password ?");
-        passwordResetDialog.setMessage("Enter Your Email To Received Reset Link.");
+        passwordResetDialog.setTitle("Want to Reset your Password ?");
+        passwordResetDialog.setMessage("Enter Your Valid/Acive Email to send Password Recovery Link.");
         passwordResetDialog.setView(resetMail);
 
         passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -137,19 +140,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(DialogInterface dialog, int which) {
                 // extract the email and send reset link
                 String mail = resetMail.getText().toString();
-                fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(LoginActivity.this, "Reset Link Sent To Your Email.", Toast.LENGTH_SHORT).show();
+                try {
+                    if(mail.isEmpty()){
+                        Toasty.normal(LoginActivity.this,"Enter valid email which is active !",Toasty.LENGTH_SHORT).show();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LoginActivity.this, "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-            }
+                }
+                catch (Exception e) {
+                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(LoginActivity.this, "Reset Link Sent To Your Email.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(LoginActivity.this, "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
         });
 
         passwordResetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -171,19 +181,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void UserLogin() {
-        String email = emailEditText.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+        String emailLogin = emailEditText.getText().toString().trim();
+        String passwordLogin = editTextPassword.getText().toString().trim();
 
         try {
-            if (TextUtils.isEmpty(email)) {
+            if (TextUtils.isEmpty(emailLogin)) {
                 emailEditText.setError("Email is Required");
                 return;
             }
-            if (TextUtils.isEmpty(password)) {
+            if (TextUtils.isEmpty(passwordLogin)) {
                 editTextPassword.setError("Password is Required");
                 return;
             }
-            if (password.length() < 6) {
+            if (passwordLogin.length() < 6) {
                 editTextPassword.setError("Password must be greater or equal to 6 characters");
                 return;
             }
@@ -208,18 +218,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //            }
 //        });
 
-        fAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        fAuth.signInWithEmailAndPassword(emailLogin, passwordLogin).addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                 Intent inToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(inToMainActivity);
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(LoginActivity.this, "Error !" +e.getMessage(), Toast.LENGTH_SHORT).show();
                 LoginProgressBar.setVisibility(View.GONE);
+                if(e instanceof FirebaseAuthInvalidCredentialsException){
+                    Toast.makeText(LoginActivity.this, "Invalid Credentials!"+e.getCause(), Toast.LENGTH_SHORT).show();
+                }
+                else if(e instanceof FirebaseAuthInvalidUserException){
+                    Toast.makeText(LoginActivity.this, "Invalid User!" +e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

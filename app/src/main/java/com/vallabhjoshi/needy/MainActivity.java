@@ -2,6 +2,7 @@ package com.vallabhjoshi.needy;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         btnLogOut = findViewById(R.id.buttonLogOut);
 
 
@@ -32,5 +32,10 @@ public class MainActivity extends AppCompatActivity
         FirebaseAuth.getInstance().signOut(); //Logout
         startActivity(new Intent(getApplicationContext(),LoginActivity.class));
         finish();
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
     }
 }
